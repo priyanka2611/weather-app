@@ -8,7 +8,7 @@ class Pastsearch extends Component {
            <>
            {
                this.props.history.length <1?
-               <h2>No history found</h2> :
+               <h2>No history found !</h2> :
                <ul>
 
                {this.props.history.map(item =>
