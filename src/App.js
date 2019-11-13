@@ -16,7 +16,8 @@ class App extends Component {
     description: undefined,
     inputVal: null,
     dropSelect: null,
-    myArray:  [{ cityVal:null, tempVal: null }]
+    history:  []
+
   }
   SetValues = (e) => {
     this.setState({
@@ -24,6 +25,7 @@ class App extends Component {
     })
   }
 
+  
   getWeather = async (e) => {
     let api_call = undefined;
     e.preventDefault();
@@ -43,6 +45,10 @@ class App extends Component {
 
     const data = await api_call.json();
     if (api_call.ok) {
+      const historyObj = {
+        city : data.sys.country,
+        temp: data.main.temp
+      }
       this.setState({
         temperature: data.main.temp,
         city: data.name,
@@ -50,8 +56,11 @@ class App extends Component {
         humidity: data.main.humidity,
         description: data.weather[0].description,
         error: "",
-        myArray: [{cityVal: data.sys.country},{tempVal: data.main.temp} ]
-
+      })
+      this.setState(prevState =>{
+        return {
+          history : [...prevState.history,historyObj]
+        }
       })
       console.log(data);
     }
@@ -68,22 +77,23 @@ class App extends Component {
     }
 
   }
-
+  
   render() {
+    const {temperature,city,country,humidity,description,error,history,dropSelect} = this.state;
     return (
       <div className="App">
 
         <Titles />
-        <Form getWeather={this.getWeather} valuesSet={this.SetValues} />
+        <Form getWeather={this.getWeather} valuesSet={this.SetValues} dropSelect ={dropSelect} />
         <Weather
-          temperature={this.state.temperature}
-          city={this.state.city}
-          country={this.state.country}
-          humidity={this.state.humidity}
-          description={this.state.description}
-          error={this.state.error}
+          temperature={temperature}
+          city={city}
+          country={country}
+          humidity={humidity}
+          description={description}
+          error={error}
         />
-        <Pastsearch getPastValue ={this.getWeather}/>
+        <Pastsearch history={history}/>
       </div>
     );
   }

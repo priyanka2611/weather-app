@@ -10,12 +10,8 @@ class Weather extends Component {
     </p>}
                 {this.props.error && <p>{this.props.error}</p>}
             </div>
-
-
         );
     }
 }
-
-
 
 export default Weather;
