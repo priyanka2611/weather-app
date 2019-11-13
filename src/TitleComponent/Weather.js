@@ -6,7 +6,7 @@ class Weather extends Component {
             <div>
                 {this.props.city && this.props.country && <p>
                     weather info :
-    {this.props.temperature}°C  ( {this.props.description})
+    {this.props.temperature}°F  ( {this.props.description})
     </p>}
                 {this.props.error && <p>{this.props.error}</p>}
             </div>

@@ -16,8 +16,8 @@ class App extends Component {
     description: undefined,
     inputVal: null,
     dropSelect: null,
-    history:  [],
-    long: null,
+    history: [],
+    longitude: null,
     lat: null
 
   }
@@ -26,80 +26,33 @@ class App extends Component {
       dropSelect: e.target.value
     })
   }
-
-  getWeatherForLongLat = async(e)=>{
-    this.setState({
-      [e.target.name]: e.target.value.trim,
-      [e.target.name]: e.target.value.trim
-    })
-   
-  let api_call;
-  e.preventDefault();
-  const lat = this.state.lat;
-  const long= this.state.long;
-  if (lat === '' || long ==='') return;
-  if(this.state.dropSelect==='long' || this.state.dropSelect==='lat' ){
-     api_call = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${API_KEY}`);
-   }
-
-  const data = await api_call.json();
-  if (api_call.ok) {
-    const historyObj = {
-      city : data.sys.country,
-      temp: data.main.temp
-    }
-    this.setState({
-      temperature: data.main.temp,
-      city: data.name,
-      country: data.sys.country,
-      humidity: data.main.humidity,
-      description: data.weather[0].description,
-      error: "",
-    })
-    this.setState(prevState =>{
-      return {
-        history : [...prevState.history,historyObj]
-      }
-    })
-    console.log(data);
-  }
-  else {
-    this.setState({
-      temperature: undefined,
-      city: undefined,
-      country: undefined,
-      humidity: undefined,
-      description: undefined,
-      error: "Check your values !!"
-    })
-
-  }
-
-}
-
   getWeather = async (e) => {
-     let api_call = undefined;
+    let api_call = undefined;
+    this.setState({
+      [e.target.name]: e.target.value.trim()
+    })
+    const lat = this.state.lat;
+    const longitude = this.state.longitude;
     e.preventDefault();
     const inputVal = e.target.value.trim();
-    if (inputVal === '') return;
-    //  const longitude = e.target.elements.longitude.value;
-    //  const latitude = e.target.elements.latitude.value;
+    if (inputVal === '' || lat===''|| longitude==='') return;
     if (this.state.dropSelect === 'name') {
       api_call = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${inputVal}&appid=${API_KEY}`);
     }
     else if (this.state.dropSelect === 'Zipcode') {
       api_call = await fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${inputVal}&appid=${API_KEY}`);
     }
-    //  else if(longitude && latitude){
-    //    api_call = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
-    //  }
+    else if (this.state.dropSelect === 'long' || this.state.dropSelect === 'lat') {
+      api_call = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${longitude}&appid=${API_KEY}`);
+    }
 
     const data = await api_call.json();
     if (api_call.ok) {
       const historyObj = {
-        city : data.sys.country,
+        city: data.name,
         temp: data.main.temp
       }
+
       this.setState({
         temperature: data.main.temp,
         city: data.name,
@@ -108,12 +61,16 @@ class App extends Component {
         description: data.weather[0].description,
         error: "",
       })
-      this.setState(prevState =>{
-        return {
-          history : [...prevState.history,historyObj]
-        }
-      })
-      console.log(data);
+      let history = [...this.state.history];
+      if(history.length >= 3){
+        history.shift()
+      }
+      history.push(historyObj)
+      this.setState({
+        history: history
+       })
+      
+      // 
     }
     else {
       this.setState({
@@ -128,14 +85,14 @@ class App extends Component {
     }
 
   }
-  
+
   render() {
-    const {temperature,city,country,humidity,description,error,history,dropSelect} = this.state;
+    const { temperature, city, country, humidity, description, error, history, dropSelect } = this.state;
     return (
       <div className="App">
 
         <Titles />
-        <Form getWeather={this.getWeather} valuesSet={this.SetValues} dropSelect ={dropSelect} getWeatherForLongLat={this.getWeatherForLongLat}/>
+        <Form getWeather={this.getWeather} valuesSet={this.SetValues} dropSelect={dropSelect} />
         <Weather
           temperature={temperature}
           city={city}
@@ -144,7 +101,8 @@ class App extends Component {
           description={description}
           error={error}
         />
-        <Pastsearch history={history}/>
+        <br></br><br></br><br></br>
+        <Pastsearch history={history} />
       </div>
     );
   }

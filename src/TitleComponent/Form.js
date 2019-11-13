@@ -14,8 +14,8 @@ class Form extends Component {
                     this.props.dropSelect === 'lat' 
                     ?
                     <>
-                    <input type="text" name="lat" placeholder="Enter Value Lat" onChange={this.props.getWeatherForLongLat} />
-                    <input type="text" name="long" placeholder="Enter Long" onChange= {this.props.getWeatherForLongLat} />
+                    <input type="text" name="lat" placeholder="Enter Value Lat" onChange={this.props.getWeather} />
+                    <input type="text" name="longitude" placeholder="Enter Long" onChange= {this.props.getWeather} />
                     </>
                     :
                 <input type="text" name="city" placeholder="Enter Value" onChange={this.props.getWeather} />

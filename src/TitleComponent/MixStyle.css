@@ -1,0 +1,11 @@
+.Box {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 15px;
+    width:50%
+  }
+
+  .h3{
+      text-align: left;
+  }
+  
